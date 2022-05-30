@@ -1,0 +1,366 @@
+<div class="mt-2 p-2 dropmainbox">
+<label-modal :getLabelDataModal="getLabelModal" :open="labelModal" />
+<div class="row">
+  <div class="col-11 a">
+    <drop class="box" @drop="handelDrop">
+      <div class="row justify-content-start">
+        <div class="col-2">
+          <p class="mb-3" v-for="l in label" :key="l.id">{{ l.name }}</p>
+        </div>
+        <div class="col-8">
+          <div class="mt-1" v-for="d in divs" :key="d.id">
+            <div v-if="d.data == 'textarea'">
+              <textarea :placeholder="d.name"></textarea>
+            </div>
+            <div v-else-if="d.data == 'table'">
+              <table class="table table-bordered">
+                <thead>
+                  <th v-for="n in parseInt(d.col)" :key="n">
+                    <drop @drop="handeltable">
+                      <label v-for="heading in tableiteam" :key="heading.id"
+                        ><span>{{ heading.head }}</span></label
+                      >
+                    </drop>
+                  </th>
+                </thead>
+                <tr v-for="m in parseInt(d.row)" :key="m">
+                  <td v-for="n in parseInt(d.col)" :key="n">
+                    <input
+                      v-if="tableedit"
+                      class="form-control"
+                      type="text"
+                      disabled
+                    />
+                    <input v-else class="form-control" type="text" />
+                  </td>
+                </tr>
+                <button class="btn btn-primary" @click="Tableaccess">
+                  {{ locklabel }}
+                </button>
+              </table>
+            </div>
+            <div v-else-if="d.data == 'select'">
+              <select>
+                <option v-for="val in d.values" :key="val" :value="val.name">
+                  {{ val.name }}
+                </option>
+              </select>
+            </div>
+            <div v-else-if="d.data == 'button'">
+              <input
+                class="mb-2"
+                :type="d.data"
+                :placeholder="d.name"
+                value="Button"
+              />
+            </div>
+            <div v-else>
+              <text-modal />
+              <!-- <input class="mb-2" :type="d.data" :placeholder="d.name" /> -->
+            </div>
+          </div>
+        </div>
+        <div class="col-5">
+          <div class="mt-1" v-for="l in links" :key="l.id">
+            <a v-if="l.name != undefined" :href="l.name">Click here</a>
+          </div>
+        </div>
+      </div>
+    </drop>
+    <button class="btn btn-outline-primary" @click="formCreate">Save</button>
+  </div>
+</div>
+</div>
+
+
+
+
+<script>
+import { Drop } from "vue-drag-drop";
+import swal from "sweetalert";
+import LabelModal from "./LabelModal.vue";
+import TextModal from "./TextModal.vue";
+export default {
+  name: "drop-area",
+  components: {
+    Drop,
+    LabelModal,
+    TextModal,
+  },
+  data: function () {
+    return {
+      divs: [],
+      label: [],
+      links: [],
+      textField: [],
+      labelModal: false,
+      locklabel: "Lock",
+      tableedit: false,
+      tableiteam: [],
+    };
+  },
+  methods: {
+    getLabelModal(open, labeldata) {
+      var labelitem = {
+        name: labeldata,
+        id: this.label.length,
+      };
+      this.label.push(labelitem);
+      this.labelModal = open;
+    },
+    getTextModal(textData) {
+      var newitem = {
+        type: "text",
+        label: textData.label,
+        placeholder: textData.placeholder,
+        id: this.textField.length,
+      };
+      this.textField.push(newitem);
+    },
+    handeltable: function (data, event) {
+      var tableheading = {
+        head: data.labelname,
+        id: this.tableiteam.length,
+      };
+      this.tableiteam.push(tableheading);
+      event;
+    },
+    Tableaccess: function () {
+      if (this.tableedit == true) {
+        this.tableedit = false;
+        this.locklabel = "Lock";
+      } else {
+        this.tableedit = true;
+        this.locklabel = "Unlock";
+      }
+    },
+    closeLabelModal() {
+      this.labelname = "";
+      this.labelModal = false;
+    },
+    handelDrop: function (data, event) {
+      // var newitem = {
+      //   data: data.types,
+      //   name: data.info,
+      //   row: data.row,
+      //   col: data.col,
+      //   values: data.values,
+      //   id: this.divs.length,
+      // };
+      if (data.labelname == "label") {
+        this.labelModal = true;
+      }
+      if (data.types == "text") {
+      }
+      // var labelitem = {
+      //   name: data.labelname,
+      //   id: this.label.length,
+      // };
+      var linkname = {
+        name: data.linkname,
+        id: this.links.length,
+      };
+      if (linkname.name != undefined) {
+        this.links.push(linkname);
+      }
+      if (newitem.data != undefined) {
+        if (data) this.divs.push(newitem);
+      }
+      // if (labelitem.name != undefined) {
+      //   this.label.push(labelitem);
+      // }
+      event;
+      // console.log(this.tableiteam);
+    },
+    check: function () {
+      this.$router.push({ name: "form" });
+    },
+    formCreate: function () {
+      var form = {};
+      var fields = [];
+      if (!localStorage.getItem("Fullform")) {
+        localStorage.setItem("Fullform", JSON.stringify([]));
+      }
+      if (this.label.length < this.divs.length) {
+        let min = this.label.length;
+        let max = this.divs.length;
+        for (let i = min; i <= max; i++) {
+          let labelitem = {
+            name: "No_label",
+            id: i,
+          };
+          this.label.push(labelitem);
+        }
+      }
+
+      if (this.links.length < this.label.length) {
+        let min = this.links.length;
+        let max = this.label.length;
+        for (let i = min; i <= max; i++) {
+          let linkitem = {
+            name: "No_link",
+            id: i,
+          };
+          this.links.push(linkitem);
+        }
+      }
+      if (this.links.length < this.divs.length) {
+        let min = this.links.length;
+        let max = this.divs.length;
+        for (let i = min; i <= max; i++) {
+          let linkitem = {
+            name: "No_link",
+            id: i,
+          };
+          this.links.push(linkitem);
+        }
+      }
+
+      for (let i = 0; i < this.divs.length; i++) {
+        if (this.label[i].name === undefined) {
+          console.log("you Got me");
+        } else {
+          if (this.divs[i].data == "table") {
+            fields.push({
+              id: i,
+              type: "Table",
+              label: this.label[i].name,
+              inputType: this.divs[i].data,
+              required: true,
+              disabled: false,
+              linkname: this.links[i].name,
+              row: this.divs[i].row,
+              col: this.divs[i].col,
+            });
+          } else if (this.divs[i].data == "select") {
+            fields.push({
+              id: i,
+              type: "select",
+              label: this.label[i].name,
+              inputType: this.divs[i].data,
+              values: this.divs[i].values,
+              selectOptions: { noneSelectedText: "Select" },
+              required: true,
+              validator: ["string", "required"],
+              linkname: this.links[i].name,
+            });
+          } else {
+            fields.push({
+              id: i,
+              type: "input",
+              inputType: this.divs[i].data,
+              label: this.label[i].name,
+              model: "name",
+              readonly: false,
+              featured: false,
+              required: true,
+              disabled: false,
+              placeholder: "Enter" + " " + this.label[i].name + " " + "Here...",
+              linkname: this.links[i].name,
+            });
+          }
+        }
+      }
+      form.fields = fields;
+      localStorage.setItem("Fullform", JSON.stringify(form));
+      this.label = [];
+      this.divs = [];
+      this.links = [];
+      swal("Nice!", "You Created a form!", "success");
+      this.$router.push({ name: "form" });
+    },
+  },
+};
+</script>
+
+
+{
+  "type":"select",
+  "label":"a. In the most recently completed academic year, was the Law School on report back for any violations of Title IV compliance? If yes, explain.",
+  "model":"type1",
+  "values":[
+  {
+  "id":"1",
+  "name":"Yes"
+  },
+  {
+  "id":"2",
+  "name":"No"
+  }
+  ],
+  "selectOptions":{
+  "noneSelectedText":"Select"
+  },
+  "required":true,
+  "validator":[
+  "string",
+  "required"
+  ]
+  }
+
+  {
+    feilds: [
+      {
+        type: "select",
+        label:
+          "a. In the most recently completed academic year, was the Law School on report back for any violations of Title IV compliance? If yes, explain.",
+        model: "type1",
+        values: [
+          {
+            id: 1,
+            name: "Yes",
+          },
+          {
+            id: 2,
+            name: "No",
+          },
+        ],
+        selectOptions: {
+          noneSelectedText: "Select",
+        },
+        required: true,
+        validator: ["string", "required"],
+      },
+    ],
+  },
+
+  {fields:[{id:0,type:"select",label:"a. In the most recently completed academic year, was the Law School on report back for any violations of Title IV compliance? If yes, explain.",inputType:"select",values:[{id:1,name:"Haj"}],selectOptions:{noneSelectedText:"Select"},required:true,validator:["string","required"]}]}
+
+
+  {"fields":[{"type":"input","inputType":"text","label":"First Name","model":"name","readonly":false,"featured":false,"required":true,"disabled":false,"placeholder":"Yuvraj","id":0},{"type":"input","inputType":"textarea","label":"Address","model":"name","readonly":false,"featured":false,"required":true,"disabled":false,"placeholder":"(example: Shimoga) ","id":1},{"types":"select","type":"select","label":"Agree","required":true,"values":[{"id":0,"name":"Yes"},{"id":1,"name":"No"}],"selectOptions":{"noneSelectedText":"Select"},"id":2}]}
+
+
+
+
+  <table class='tablecss' aria-labelledby="tableLabel" v-if="templates">
+  <thead>
+      <tr>
+          <th>Form ID</th>
+          <th>Form Name</th>
+          <th>Year</th>
+          <th>Menu</th>
+          <th>SubMenu</th>
+          <th>Modified by</th>
+          <th>Last modified</th>
+          <th>Status</th>
+          <th>Actions</th>
+      </tr>
+  </thead>
+  <tbody>
+      <tr v-for="template of templates" v-bind:key="template" @click="showTemplateModal(template)">
+          <td>{{ template.formNumber }}</td>
+          <td>{{ template.name }}</td>
+          <td>{{ template.year }}</td>
+          <td>{{ template.menu }}</td>
+          <td>{{ template.subMenu }}</td>
+          <td>{{ template.modifiedBy }}</td>
+          <td>{{ template.lastModifiedDateTime }}</td>
+          <td>{{ template.templateStatus }}</td>
+          <td>
+              <a class="btn btn-success btn-sm" @click="editTemplate(template.templateID,'edit')" v-show="template.templateStatus=='Drafted'"><i class="fa fa-pencil"></i></a>
+              <a class="btn btn-success btn-sm" @click="copyTemplate(template.templateID,'copy')" v-show="template.templateStatus=='Published'"><i class="fa fa-clone"></i></a>
+              &nbsp;<a class="btn btn-danger btn-sm" @click.stop="deleteTemplate(template.templateID,'delete')" v-show="template.templateStatus=='Drafted'"><i class="fa fa-trash-o"></i></a>
+          </td>
+      </tr>
+  </tbody>
+</table>
