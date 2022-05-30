@@ -1,11 +1,13 @@
 <template>
   <div>
     <h1 class="text-center">Demo of vue-form-generator</h1>
-    <div class="container" id="app">
+    <div
+      class="container"
+      id="app"
+    >
       <div class="panel panel-default">
         <div class="panel-heading">Form</div>
         <div class="panel-body">
-          <pre>{{schema}}</pre>
           <vue-form-generator
             :schema="schema"
             :model="model"
@@ -16,14 +18,20 @@
       <div class="panel panel-default">
         <div class="panel-heading">Model</div>
         <div class="panel-body">
-          <pre v-if="model" v-html="prettyJSON(model)"></pre>
+          <pre
+            v-if="model"
+            v-html="prettyJSON(model)"
+          ></pre>
         </div>
       </div>
 
       <div class="panel panel-default">
         <div class="panel-heading">Schema</div>
         <div class="panel-body">
-          <pre v-if="model" v-html="prettyJSON(schema)"></pre>
+          <pre
+            v-if="model"
+            v-html="prettyJSON(schema)"
+          ></pre>
         </div>
       </div>
     </div>
@@ -36,7 +44,7 @@ export default {
   components: {
     "vue-form-generator": VueFormGenerator.component,
   },
-  data() {
+  data () {
     return {
       model: {
       },
@@ -200,7 +208,7 @@ export default {
         );
       }
     },
-    
+
   },
 };
 </script>

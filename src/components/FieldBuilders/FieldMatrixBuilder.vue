@@ -45,6 +45,7 @@
       <button
         type="button"
         class="btn btn-primary"
+        @click="addColumnFields"
       >Add Column Fields</button>
       <div class="container mt-2">
         <div
@@ -162,6 +163,7 @@ export default {
       this.value.rows.push({ label: '', fields: [], model: 'R' + new Date().getTime(), value: null })
     },
     addColumnFields () {
+      console.log(this.value)
       this.value.columnsFields.push({ label: '', model: 'F' + new Date().getTime() })
 
     }

@@ -41,7 +41,7 @@ export default {
         this.getField({ type: "input", formLabel: "Number", inputType: "number" }),
         this.getField({ type: "textArea", formLabel: "Text Area" }),
         this.getField({ type: "vueSelect", formLabel: "Dropdown" }),
-        this.getField({ type: "matrix", formLabel: "Matrix", componentName: "FieldMatrixBuilder", columns: [], rows: [] }),
+        this.getField({ type: "matrix", formLabel: "Matrix", componentName: "FieldMatrixBuilder", columns: [], rows: [], columnsFields: [] }),
       ],
     };
   },

@@ -1,11 +1,15 @@
 <template>
   <div :class="wrapperClass">
-  <!-- <pre>{{value}}</pre> -->
+    <!-- <pre>{{value}}</pre> -->
     <table :class="tableClass">
       <thead>
         <tr>
           <th scope="col"></th>
-          <th scope="col" v-for="column in columns" :key="column.model">
+          <th
+            scope="col"
+            v-for="column in columns"
+            :key="column.model"
+          >
             <div class="column">
               <div>{{ column.label }}</div>
               <div class="row flex-nowrap">
@@ -22,15 +26,26 @@
         </tr>
       </thead>
       <tbody>
-        <tr v-for="row in rows" :key="row.model">
+        <tr
+          v-for="row in rows"
+          :key="row.model"
+        >
           <th scope="row">
             {{ row.label }}
           </th>
-          <td v-for="column in columns" :key="column.model">
-            <div v-if="!row.noInputFields" class="row flex-nowrap input-groups justify-content-between">
-              <div v-for="field in getColumnFields(column)"
+          <td
+            v-for="column in columns"
+            :key="column.model"
+          >
+            <div
+              v-if="!row.noInputFields"
+              class="row flex-nowrap input-groups justify-content-between"
+            >
+              <div
+                v-for="field in getColumnFields(column)"
                 :key="field.model"
-                class="input-group">
+                class="input-group"
+              >
                 <input
                   :type="field.type || 'number'"
                   :id="`${field.model}-${row.model}-${column.model}`"
@@ -58,32 +73,32 @@ export default {
   name: "FieldMatrix",
   mixins: [abstractField],
   computed: {
-    columns() {
+    columns () {
       const { columns } = this.schema;
       return columns ?? [];
     },
-    rows() {
+    rows () {
       const { rows } = this.schema;
       return rows ?? [];
     },
-    columnsFields() {
+    columnsFields () {
       const { columnsFields } = this.schema;
       return columnsFields ?? [];
     },
-    wrapperClass() {
+    wrapperClass () {
       const { wrapperClass } = this.schema;
       return wrapperClass || "table-responsive";
     },
-    tableClass() {
+    tableClass () {
       const { tableClass } = this.schema;
       return tableClass || "table table-bordered";
     },
   },
   methods: {
-    getColumnFields(column) {
+    getColumnFields (column) {
       return column.fields ?? this.columnsFields;
     },
-    getValue(field, row, column) {
+    getValue (field, row, column) {
       const { model } = row;
       const { model: columnModel } = column;
       const { model: fieldModel } = field;
@@ -92,11 +107,11 @@ export default {
       const { [fieldModel]: fieldValue } = columnValue ?? {};
       return fieldValue;
     },
-    onInput(field, row, column, event) {
+    onInput (field, row, column, event) {
       const { value } = event.target;
       this.setValue(field, row, column, value);
     },
-    setValue(field, row, column, value) {
+    setValue (field, row, column, value) {
       const { model } = row;
       const { model: columnModel } = column;
       const { model: fieldModel } = field;
