@@ -1,11 +1,14 @@
 <template>
   <div>
-    <FieldLabel v-model="getModel.label" />
+    <FieldLabel v-model="modelValue.label" />
+    <vs-checkbox v-model="modelValue.noInputFields">
+      No Input Fields
+    </vs-checkbox>
   </div>
 </template>
 
 <script>
-import FieldLabel from './FieldLabel.vue'
+import FieldLabel from "./FieldLabel.vue";
 
 export default {
   name: "FieldRow",
@@ -19,17 +22,16 @@ export default {
     },
   },
   computed: {
-    getModel: {
-      get () {
-        return this.value
+    modelValue: {
+      get() {
+        return this.value;
       },
-      set (value) {
-        this.$emit('input', value)
-      }
-    }
+      set(value) {
+        this.$emit("input", value);
+      },
+    },
   },
-}
+};
 </script>
 
-<style>
-</style>
+<style></style>

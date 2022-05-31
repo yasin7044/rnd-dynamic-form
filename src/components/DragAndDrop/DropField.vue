@@ -1,27 +1,20 @@
 <template>
-  <div
-    class="mt-5 drop-field rounded"
-    style="height:100%"
-  >
+  <div class="mt-5 drop-field rounded" style="height: 100%">
     <drop
       class="box"
       @drop="handelDrop"
-      style="min-height: 440px; max-height: 90vh;"
+      style="min-height: 440px; max-height: 90vh"
     >
-      <div
-        v-for="(eachField,index) in generateField"
-        :key="index"
-      >
+      <div v-for="(eachField, index) in generateField" :key="index">
         <div class="header">
-          {{eachField.formLabel}}
+          {{ eachField.formLabel }}
         </div>
-        {{eachField}}
+        {{ eachField }}
         <component
           :is="eachField.componentName"
           v-model="generateField[index]"
         />
         <vs-button @click.prevent="deleteField(index)">Delete</vs-button>
-
       </div>
 
       <!-- <vs-collapse
@@ -40,20 +33,26 @@
         </vs-collapse-item>
       </vs-collapse> -->
     </drop>
-    <div class="preview">
 
-      <vue-form-generator
-        :schema="schema"
-        :model="model"
-        v-if="model"
-      ></vue-form-generator>
-      <pre> {{model}}</pre>
+    <div>
+      <h1 class="text-center">Demo of vue-form-generator</h1>
+      <div class="container" id="app">
+        <div class="panel panel-default">
+          <div class="panel-heading">Form</div>
+          <div class="panel-body">
+            <vue-form-generator
+              :schema="schema"
+              :model="model"
+            ></vue-form-generator>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
-import { Drop } from "vue-drag-drop"
+import { Drop } from "vue-drag-drop";
 import VueFormGenerator from "vue-form-generator";
 
 export default {
@@ -61,36 +60,35 @@ export default {
     Drop,
     "vue-form-generator": VueFormGenerator.component,
   },
-  data () {
+  data() {
     return {
       generateField: [],
       active: false,
       schema: {
-        fields: []
+        fields: [],
       },
-      model: {}
-    }
+      model: {},
+    };
   },
   watch: {
     generateField: {
       deep: true,
-      handler () {
-        console.log(this.generateField)
-        this.$set(this.schema, "fields", this.generateField)
-      }
-    }
+      handler() {
+        this.$set(this.schema, "fields", this.generateField);
+      },
+    },
   },
   methods: {
-    handelDrop (data, event) {
-      this.generateField.push(data)
+    handelDrop(data, event) {
+      this.generateField.push(data);
     },
-    deleteField (index) {
+    deleteField(index) {
       this.$nextTick(() => {
-        this.generateField.splice(index, 1)
-      })
-    }
+        this.generateField.splice(index, 1);
+      });
+    },
   },
-}
+};
 </script>
 
 <style>

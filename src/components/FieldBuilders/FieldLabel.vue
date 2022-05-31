@@ -8,7 +8,14 @@
         id="label"
         aria-describedby="basic-addon3"
         v-model="modelValue"
-      >
+      />
+      <div class="input-group-append">
+        <vs-button
+          color="danger"
+          icon="delete"
+          @click="$emit('onDelete')"
+        ></vs-button>
+      </div>
     </div>
   </div>
 </template>
@@ -19,21 +26,20 @@ export default {
   props: {
     value: {
       type: String,
-      default: ""
+      default: "",
     },
   },
   computed: {
     modelValue: {
-      get () {
+      get() {
         return this.value;
       },
-      set (value) {
+      set(value) {
         this.$emit("input", value);
-      }
-    }
-  }
-}
+      },
+    },
+  },
+};
 </script>
 
-<style>
-</style>
+<style></style>
