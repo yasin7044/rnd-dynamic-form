@@ -1,9 +1,20 @@
 <template>
   <div>
-    <FieldLabel v-model="modelValue.label" />
-    <vs-checkbox v-model="modelValue.noInputFields">
-      No Input Fields
-    </vs-checkbox>
+    <FieldLabel v-model="modelValue.label" @onDelete="$emit('onDelete')" />
+
+    <div class="row row-col-2">
+      <vs-checkbox class="col" v-model="modelValue.noInputFields">
+        No Input Fields
+      </vs-checkbox>
+      <vs-checkbox
+        v-if="requireSubtotal"
+        class="col"
+        v-model="modelValue.isInSubtotal"
+        :disabled="modelValue.noInputFields"
+      >
+        Is In Subtotal
+      </vs-checkbox>
+    </div>
   </div>
 </template>
 
@@ -20,6 +31,7 @@ export default {
       type: Object,
       default: () => ({}),
     },
+    requireSubtotal: Boolean,
   },
   computed: {
     modelValue: {
@@ -31,6 +43,7 @@ export default {
       },
     },
   },
+  emits: ["onDelete"],
 };
 </script>
 

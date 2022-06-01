@@ -1,13 +1,11 @@
 <template>
   <div>
     <h1 class="text-center">Demo of vue-form-generator</h1>
-    <div
-      class="container"
-      id="app"
-    >
+    <div class="container" id="app">
       <div class="panel panel-default">
         <div class="panel-heading">Form</div>
         <div class="panel-body">
+        <!-- <pre>  {{model}}</pre> -->
           <vue-form-generator
             :schema="schema"
             :model="model"
@@ -18,20 +16,14 @@
       <div class="panel panel-default">
         <div class="panel-heading">Model</div>
         <div class="panel-body">
-          <pre
-            v-if="model"
-            v-html="prettyJSON(model)"
-          ></pre>
+          <pre v-if="model" v-html="prettyJSON(model)"></pre>
         </div>
       </div>
 
       <div class="panel panel-default">
         <div class="panel-heading">Schema</div>
         <div class="panel-body">
-          <pre
-            v-if="model"
-            v-html="prettyJSON(schema)"
-          ></pre>
+          <pre v-if="model" v-html="prettyJSON(schema)"></pre>
         </div>
       </div>
     </div>
@@ -44,10 +36,9 @@ export default {
   components: {
     "vue-form-generator": VueFormGenerator.component,
   },
-  data () {
+  data() {
     return {
-      model: {
-      },
+      model: {},
       schema: {
         fields: [
           {
@@ -55,6 +46,7 @@ export default {
             inputType: "text",
             label: "Matrix",
             model: "matrix",
+            subtotal: true,
             columns: [
               {
                 label: "Testing Column1",
@@ -79,8 +71,8 @@ export default {
               { label: "Testing column 3", model: "col3" },
             ],
             rows: [
-              { label: "Testing Row 1", model: "row1" },
-              { label: "Testing Row 2", model: "row2" },
+              { label: "Testing Row 1", model: "row1", isInSubtotal: true },
+              { label: "Testing Row 2", model: "row2", isInSubtotal: true },
               { label: "Testing Row 3", model: "row3", noInputFields: true },
               { label: "Testing Row 4", model: "row4" },
             ],
@@ -208,7 +200,6 @@ export default {
         );
       }
     },
-
   },
 };
 </script>

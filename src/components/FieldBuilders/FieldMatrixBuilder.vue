@@ -1,7 +1,13 @@
 <template>
   <div class="container flex-column mb-2 border">
     <button @click.prevent="setDummyColumnRows">Dummy Field</button>
-    <FieldLabel v-model="modelValue.label" />
+    <FieldLabel v-model="modelValue.label" no-delete-btn />
+    <div class="row row-col-2">
+      <vs-checkbox class="col" v-model="subtotal">
+        Require Subtotal
+      </vs-checkbox>
+      <vs-checkbox class="col" v-model="total"> Require Total </vs-checkbox>
+    </div>
 
     <div class="my-2">
       <button type="button" class="btn btn-primary" @click.prevent="addColumn">
@@ -28,7 +34,11 @@
 
       <div class="container mt-2">
         <div v-for="(row, index) in rows" :key="index" class="border p-2 m-2">
-          <FieldRow v-model="rows[index]" @onDelete="removeRow(index)" />
+          <FieldRow
+            v-model="rows[index]"
+            @onDelete="removeRow(index)"
+            :require-subtotal="subtotal"
+          />
         </div>
       </div>
     </div>
@@ -43,7 +53,10 @@
           :key="index"
           class="border p-2 m-2"
         >
-          <FieldLabel v-model="columnsFields[index].label" />
+          <FieldLabel
+            v-model="columnsFields[index].label"
+            @onDelete="removeColumnField(index)"
+          />
         </div>
       </div>
     </div>
@@ -54,6 +67,10 @@
 import FieldLabel from "./FieldLabel.vue";
 import FieldColumn from "./FieldColumn.vue";
 import FieldRow from "./FieldRow.vue";
+
+let colCount = 1;
+let rowCount = 1;
+let colFieldCount = 1;
 
 export default {
   name: "FieldMatrixBuilder",
@@ -82,11 +99,9 @@ export default {
         if (!this.modelValue.columns) {
           this.columns = [];
         }
-        console.log("get columns");
         return this.modelValue.columns;
       },
       set(value) {
-        console.log("set columns", value);
         this.modelValue = {
           ...this.modelValue,
           columns: value,
@@ -118,6 +133,28 @@ export default {
         this.modelValue = {
           ...this.modelValue,
           columnsFields: value,
+        };
+      },
+    },
+    subtotal: {
+      get() {
+        return this.modelValue.subtotal;
+      },
+      set(value) {
+        this.modelValue = {
+          ...this.modelValue,
+          subtotal: value,
+        };
+      },
+    },
+    total: {
+      get() {
+        return this.modelValue.total;
+      },
+      set(value) {
+        this.modelValue = {
+          ...this.modelValue,
+          total: value,
         };
       },
     },
@@ -191,48 +228,37 @@ export default {
     addColumn() {
       this.columns.push({
         label: "",
-        model: `col-${this.columns.length + 1}`,
+        model: `col-${colCount++}`,
       });
     },
     removeColumn(index) {
-      console.log("remove column", index);
-      this.columns = this.columns
-        .filter((column, i) => i !== index)
-        .map((column, index) => {
-          column.model = `col-${index + 1}`;
-          return column;
-        });
+      this.$nextTick(() => {
+        this.columns.splice(index, 1);
+      });
     },
     addRow() {
       this.rows.push({
         label: "",
-        model: `row-${this.rows.length + 1}`,
+        model: `row-${rowCount++}`,
         noInputFields: false,
+        isInSubtotal: false,
       });
     },
     removeRow(index) {
-      console.log("remove row", index);
-      this.rows = this.rows
-        .filter((row, i) => i !== index)
-        .map((row, index) => {
-          row.model = `row-${index + 1}`;
-          return row;
-        });
+      this.$nextTick(() => {
+        this.rows.splice(index, 1);
+      });
     },
     addColumnFields() {
       this.columnsFields.push({
         label: "",
-        model: `colField-${this.columnsFields.length + 1}`,
+        model: `colField-${colFieldCount++}`,
       });
     },
     removeColumnField(index) {
-      console.log("remove column field", index);
-      this.columnsFields = this.columnsFields
-        .filter((field, i) => i !== index)
-        .map((field, index) => {
-          field.model = `colField-${index + 1}`;
-          return field;
-        });
+      this.$nextTick(() => {
+        this.columnsFields.splice(index, 1);
+      });
     },
   },
 };

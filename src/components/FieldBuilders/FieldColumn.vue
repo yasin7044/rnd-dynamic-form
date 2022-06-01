@@ -1,11 +1,8 @@
 <template>
   <div>
-    <FieldLabel v-model="modelValue.label" />
+    <FieldLabel v-model="modelValue.label" @onDelete="$emit('onDelete')" />
 
-    <vs-checkbox
-      v-model="isDedicatedColumnFields"
-      @input="handleDedicatedColumnFields"
-    >
+    <vs-checkbox v-model="isDedicatedColumnFields">
       Needs a dedicated column fields
     </vs-checkbox>
 
@@ -19,7 +16,7 @@
           :key="index"
           class="border p-2 m-2"
         >
-          <FieldLabel v-model="fields[index].label" />
+          <FieldLabel v-model="fields[index].label" @onDelete="removeField" />
         </div>
       </div>
     </div>
@@ -29,15 +26,12 @@
 <script>
 import FieldLabel from "./FieldLabel.vue";
 
+let fieldCount = 1;
+
 export default {
   name: "FieldColumn",
   components: {
     FieldLabel,
-  },
-  data() {
-    return {
-      isDedicatedColumnFields: false,
-    };
   },
   props: {
     value: {
@@ -65,30 +59,33 @@ export default {
         };
       },
     },
+    isDedicatedColumnFields: {
+      get() {
+        return this.fields !== undefined;
+      },
+      set(value) {
+        if (value) {
+          this.fields = [];
+        } else {
+          this.fields = undefined;
+        }
+      },
+    },
   },
   methods: {
     addFields() {
       this.fields.push({
         label: "",
-        model: `colField-${this.fields.length + 1}`,
+        model: `colField-${fieldCount++}`,
       });
     },
     removeField(index) {
-      this.fields = this.fields
-        .filter((field, i) => i !== index)
-        .map((field, i) => {
-          field.model = `colField-${i + 1}`;
-          return field;
-        });
-    },
-    handleDedicatedColumnFields(value) {
-      if (value) {
-        this.fields = [];
-      } else {
-        this.fields = undefined;
-      }
+      this.$nextTick(() => {
+        this.fields.splice(index, 1);
+      });
     },
   },
+  emits: ["onDelete"],
 };
 </script>
 

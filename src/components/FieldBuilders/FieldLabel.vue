@@ -9,7 +9,7 @@
         aria-describedby="basic-addon3"
         v-model="modelValue"
       />
-      <div class="input-group-append">
+      <div v-if="!noDeleteBtn" class="input-group-append">
         <vs-button
           color="danger"
           icon="delete"
@@ -28,6 +28,7 @@ export default {
       type: String,
       default: "",
     },
+    noDeleteBtn: Boolean,
   },
   computed: {
     modelValue: {
