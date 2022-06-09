@@ -76,12 +76,12 @@ import axios from "axios";
 async function uploadImage(formData) {
   try {
     const response = await axios.post(
-      "https://api.upload.io/v1/files/basic",
+      "https://Yourapipath.com",
       formData,
       {
         headers: {
-          Authorization: "Bearer public_FW25ar5C1Y3UNBasPXxrAs5SRmNb",
-          "Content-Type": "image/jpeg",
+          Authorization: "YourBearer Token",
+          "Content-Type": "multipart/form-data",
         },
       }
     );
