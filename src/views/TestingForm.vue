@@ -5,7 +5,7 @@
       <div class="panel panel-default">
         <div class="panel-heading">Form</div>
         <div class="panel-body">
-        <!-- <pre>  {{model}}</pre> -->
+          <!-- <pre>  {{model}}</pre> -->
           <vue-form-generator
             :schema="schema"
             :model="model"
@@ -32,21 +32,34 @@
 
 <script>
 import VueFormGenerator from "vue-form-generator";
+
 export default {
   components: {
     "vue-form-generator": VueFormGenerator.component,
   },
   data() {
     return {
-      model: {},
+      model: {
+        dataTable: [],
+      },
       schema: {
         fields: [
+          {
+            type: "input",
+            inputType: "text",
+            label: "Name",
+            model: "name",
+          },
+          {
+            type: "FileUploader",
+          },
           {
             type: "matrix",
             inputType: "text",
             label: "Matrix",
             model: "matrix",
             subtotal: true,
+            total: true,
             columns: [
               {
                 label: "Testing Column1",
@@ -92,78 +105,30 @@ export default {
             ],
           },
           {
-            type: "input",
-            inputType: "text",
-            label: "ID",
-            model: "id",
-            values: [],
-          },
-          {
-            type: "input",
-            inputType: "text",
-            label: "Name",
-            model: "name",
-            readonly: false,
-            featured: true,
-            required: true,
-            disabled: false,
-            placeholder: "User's name",
-            validator: VueFormGenerator.validators.string,
-          },
-          {
-            type: "input",
-            inputType: "password",
-            label: "Password",
-            model: "password",
-            min: 6,
-            required: true,
-            hint: "Minimum 6 characters",
-            validator: VueFormGenerator.validators.string,
-          },
-          {
-            type: "input",
-            inputType: "number",
-            label: "Age",
-            model: "age",
-            min: 18,
-            validator: VueFormGenerator.validators.number,
-          },
-          {
-            type: "input",
-            inputType: "email",
-            label: "E-mail",
-            model: "email",
-            placeholder: "User's e-mail address",
-            validator: VueFormGenerator.validators.email,
-          },
-          {
-            type: "checklist",
-            label: "Skills",
-            model: "skills",
-            multi: true,
-            required: true,
-            multiSelect: true,
-            values: [
-              "HTML5",
-              "Javascript",
-              "CSS3",
-              "CoffeeScript",
-              "AngularJS",
-              "ReactJS",
-              "VueJS",
+            type: "DataTable",
+            tableLabel: "Data Table",
+            model: "dataTable",
+            isAddButtonRequired: true,
+            headers: [
+              {
+                text: "First Name",
+                type: "input",
+                inputType: "text",
+                value: "value-1",
+              },
+              {
+                text: "Last Name",
+                type: "input",
+                inputType: "text",
+                value: "value-2",
+              },
+              {
+                text: "Age",
+                type: "input",
+                inputType: "number",
+                value: "value-4",
+              },
             ],
-          },
-          {
-            type: "switch",
-            label: "Status",
-            model: "status",
-            multi: true,
-            readonly: false,
-            featured: false,
-            disabled: false,
-            default: true,
-            textOn: "Active",
-            textOff: "Inactive",
           },
         ],
       },

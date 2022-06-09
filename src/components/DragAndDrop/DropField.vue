@@ -1,37 +1,34 @@
 <template>
-  <div class="mt-5 drop-field rounded" style="height: 100%">
+  <v-container class="mt-5" style="height: 100%" fluid>
     <drop
       class="box"
       @drop="handelDrop"
-      style="min-height: 440px; max-height: 90vh"
+      style="min-height: 500px; max-height: 90vh; width: 100% !important"
     >
-      <div v-for="(eachField, index) in generateField" :key="index">
-        <div class="header">
-          {{ eachField.formLabel }}
-        </div>
-        {{ eachField }}
-        <component
-          :is="eachField.componentName"
-          v-model="generateField[index]"
-        />
-        <vs-button @click.prevent="deleteField(index)">Delete</vs-button>
-      </div>
+      <v-expansion-panels popout>
+        <v-expansion-panel v-for="(eachField, index) in schema.fields" :key="index">
+          <v-expansion-panel-header>
+            <div class="row justify-space-between mr-2">
+              <span>{{ eachField.builderLabel }}</span>
 
-      <!-- <vs-collapse
-        v-for="(eachField,index) in generateField"
-        :key="index"
-      >
-
-        <vs-collapse-item :open="true">
-          <div slot="header">
-            {{eachField.formLabel}}
-          </div>
-          <component
-            :is="eachField.componentName"
-            v-model="generateField[index]"
-          />
-        </vs-collapse-item>
-      </vs-collapse> -->
+              <v-icon
+                small
+                @click.prevent.stop="deleteField(index)"
+                color="pink"
+              >
+                mdi-delete
+              </v-icon>
+            </div>
+          </v-expansion-panel-header>
+          <v-expansion-panel-content>
+            <component
+              :is="eachField.componentName"
+              v-model="schema.fields[index]"
+              :schemas="schema.fields"
+            />
+          </v-expansion-panel-content>
+        </v-expansion-panel>
+      </v-expansion-panels>
     </drop>
 
     <div>
@@ -40,51 +37,45 @@
         <div class="panel panel-default">
           <div class="panel-heading">Form</div>
           <div class="panel-body">
-            <vue-form-generator
-              :schema="schema"
-              :model="model"
-            ></vue-form-generator>
+              <vue-form-generator
+            :schema="schema"
+            :model="model"
+          ></vue-form-generator>
           </div>
         </div>
       </div>
     </div>
-  </div>
+  </v-container>
 </template>
 
 <script>
+import FieldDataTableBuilder from "../FieldBuilders/FieldDataTableBuilder.vue";
 import { Drop } from "vue-drag-drop";
-import VueFormGenerator from "vue-form-generator";
+
+let count = 1;
 
 export default {
   components: {
     Drop,
-    "vue-form-generator": VueFormGenerator.component,
+    FieldDataTableBuilder,
   },
   data() {
     return {
-      generateField: [],
       active: false,
       schema: {
-        fields: [],
+        fields: [
+      ]
       },
       model: {},
     };
   },
-  watch: {
-    generateField: {
-      deep: true,
-      handler() {
-        this.$set(this.schema, "fields", this.generateField);
-      },
-    },
-  },
   methods: {
-    handelDrop(data, event) {
-      this.generateField.push(data);
+    handelDrop(data) {
+      this.schema.fields.push({ ...data, model: `field-${count++}` });
     },
     deleteField(index) {
       this.$nextTick(() => {
-        this.generateField.splice(index, 1);
+        this.schema.fields.splice(index, 1);
       });
     },
   },

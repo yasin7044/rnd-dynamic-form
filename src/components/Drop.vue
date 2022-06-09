@@ -5,12 +5,16 @@
         <input />
       </div>
     </div>
-  <!-- <pre>  {{schemaData}}</pre>
+    <!-- <pre>  {{schemaData}}</pre>
   <pre>  {{formOptions}}</pre>
    <pre> {{model}}</pre> -->
     <div class="mt-2 p-2 dropmainbox">
       <drop class="box" @drop="handelDrop">
-        <div class="mt-1" v-for="field_iteam in inputFields.fields" :key="field_iteam.id">
+        <div
+          class="mt-1"
+          v-for="field_iteam in inputFields.fields"
+          :key="field_iteam.id"
+        >
           <div v-if="field_iteam.type == 'textArea'">
             <text-area-modal
               :getTextAreaDataModel="getTextAreaModal"
@@ -19,7 +23,10 @@
             />
           </div>
           <div v-if="field_iteam.type == 'label'">
-            <label-modal :getLabelDataModal="getLabelModel" :open="field_iteam" />
+            <label-modal
+              :getLabelDataModal="getLabelModel"
+              :open="field_iteam"
+            />
           </div>
           <div v-else-if="field_iteam.type == 'select'">
             <drop-down
@@ -82,7 +89,7 @@
                       v-bind:options="formOptions"
                       :model="model"
                     ></vue-form-generator>
-                   <pre> {{ model }}</pre>
+                    <pre> {{ schemaData }}</pre>
                   </div>
                 </div>
                 <div class="modal-footer">
@@ -435,10 +442,14 @@ export default {
         this.inputFields.fields[j].id = counting;
         if (this.inputFields.fields[j].type == "input") {
           this.inputFields.fields[j].model =
-            this.inputFields.fields[j].id + "_" + this.inputFields.fields[j].inputType;
+            this.inputFields.fields[j].id +
+            "_" +
+            this.inputFields.fields[j].inputType;
         } else {
           this.inputFields.fields[j].model =
-            this.inputFields.fields[j].id + "_" + this.inputFields.fields[j].type;
+            this.inputFields.fields[j].id +
+            "_" +
+            this.inputFields.fields[j].type;
         }
         if (this.inputFields.fields[j].fieldmodalname == deletedModel) {
           this.inputFields.fields[j].show = false;
@@ -456,7 +467,10 @@ export default {
       // if (this.selected.name == "") {
       //     swal("Please fill form name");
       // }
-      if (this.inputFields.fields === undefined || this.inputFields.fields.length == 0) {
+      if (
+        this.inputFields.fields === undefined ||
+        this.inputFields.fields.length == 0
+      ) {
         swal("Please add atleast one control to create a template");
       } else {
         for (let i = 0; i < this.inputFields.fields.length; i++) {
@@ -503,7 +517,8 @@ export default {
                 .post("/Template/SaveOrUpdateTemplate", templateRequest, config)
                 .then((response) => {
                   console.log(response);
-                  if (response.data.isSuccess) swal("Template Saved Sucessfully");
+                  if (response.data.isSuccess)
+                    swal("Template Saved Sucessfully");
                   this.$router.push({ name: "Dashboard" });
                 })
                 .catch(function (error) {
@@ -518,7 +533,10 @@ export default {
     },
     formPreview: function () {
       console.log("values", this.inputFields);
-      if (this.inputFields.fields === undefined || this.inputFields.fields.length == 0) {
+      if (
+        this.inputFields.fields === undefined ||
+        this.inputFields.fields.length == 0
+      ) {
         swal("No controles are available to preview", "error");
         this.showModalTemplate = false;
       } else {
@@ -537,8 +555,7 @@ export default {
     },
   },
   updated() {
-
-    console.log('HI')
+    console.log("HI");
     if (this.count == 0 && this.inputFields.fields.length > 0) {
       for (let i = 0; i < this.inputFields.fields.length; i++) {
         if (this.inputFields.fields[i].show == true) {
@@ -567,7 +584,10 @@ export default {
                 }
               }
             }
-            if (result[Object.keys(result)[0]] == myObject.isvisiblevalue.toLowerCase()) {
+            if (
+              result[Object.keys(result)[0]] ==
+              myObject.isvisiblevalue.toLowerCase()
+            ) {
               return true;
             }
           };

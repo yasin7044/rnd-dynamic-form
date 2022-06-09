@@ -6,20 +6,20 @@
 
 <script>
 import { abstractField } from "vue-form-generator";
-import vSelect from 'vue-select'
+import vSelect from "vue-select";
 
 export default {
   name: "FieldMatrix",
   mixins: [abstractField],
   components: {
-    vSelect
+    vSelect,
   },
   computed: {
-    props () {
+    props() {
       const { props } = this.schema;
       return props ?? {};
     },
-    wrapperClass () {
+    wrapperClass() {
       const { wrapperClass } = this.schema;
       return wrapperClass || "table-responsive";
     },

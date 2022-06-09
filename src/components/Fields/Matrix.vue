@@ -1,41 +1,58 @@
 <template>
-  <div :class="wrapperClass">
-    <table :class="tableClass">
-      <thead>
-        <tr>
-          <th scope="col"></th>
-          <th scope="col" v-for="column in columns" :key="column.model">
-            <div class="column">
-              <div>{{ column.label }}</div>
-              <div class="row flex-nowrap">
-                <label
+  <div
+    class="v-data-table v-data-table--has-bottom theme--light elevation-1 mb-6"
+  >
+    <div class="v-data-table__wrapper">
+      <table>
+        <colgroup>
+          <col v-for="column in columns" :key="column.model" class="" />
+        </colgroup>
+        <thead class="v-data-table-header">
+          <tr>
+            <th
+              role="columnheader"
+              scope="col"
+              aria-sort="none"
+              class="text-start"
+            />
+            <th
+              role="columnheader"
+              scope="col"
+              aria-sort="none"
+              class="text-start"
+              v-for="column in columns"
+              :key="column.model"
+              :aria-label="column.label"
+            >
+              <div class="column">
+                <span class="text-body-2 font-weight-medium">
+                  {{ column.label }}
+                </span>
+                <v-row>
+                  <label
+                    v-for="field in getColumnFields(column)"
+                    :key="field.model"
+                    class="col mx-1"
+                  >
+                    {{ field.label }}
+                  </label>
+                </v-row>
+              </div>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in rows" :key="row.model">
+            <th scope="row" class="text-body-2">
+              {{ row.label }}
+            </th>
+            <td v-for="column in columns" :key="column.model" class="pa-0">
+              <div v-if="!row.noInputFields" class="input-groups">
+                <v-text-field
                   v-for="field in getColumnFields(column)"
                   :key="field.model"
-                  class="col mx-1"
-                >
-                  {{ field.label }}
-                </label>
-              </div>
-            </div>
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="row in rows" :key="row.model">
-          <th scope="row">
-            {{ row.label }}
-          </th>
-          <td v-for="column in columns" :key="column.model">
-            <div
-              v-if="!row.noInputFields"
-              class="row flex-nowrap input-groups justify-content-between"
-            >
-              <div
-                v-for="field in getColumnFields(column)"
-                :key="field.model"
-                class="input-group"
-              >
-                <input
+                  outlined
+                  dense
                   :type="field.type || 'number'"
                   :id="`${field.model}-${row.model}-${column.model}`"
                   :name="`${field.model}-${row.model}-${column.model}`"
@@ -43,61 +60,73 @@
                   :disabled="field.disabled"
                   :required="field.required"
                   :readonly="field.readonly"
-                  :class="`form-control ${field.class || ''}`"
                   @input="onInput(field, row, column, $event)"
-                />
+                  hide-details
+                ></v-text-field>
               </div>
-            </div>
-          </td>
-        </tr>
-        <tr v-if="subtotal">
-          <th scope="row">Subtotal</th>
-          <td v-for="column in columns" :key="column.model">
-            <div class="row flex-nowrap input-groups justify-content-between">
-              <div
-                v-for="field in getColumnFields(column)"
-                :key="field.model"
-                class="input-group"
-              >
-                <input
+            </td>
+          </tr>
+          <tr v-if="subtotal">
+            <th scope="row" class="text-body-2">Subtotal</th>
+            <td v-for="column in columns" :key="column.model" class="pa-0">
+              <div class="input-groups">
+                <v-text-field
+                  v-for="field in getColumnFields(column)"
+                  :key="field.model"
+                  outlined
+                  dense
                   :type="field.type || 'number'"
                   :id="`${field.model}-subtotal-${column.model}`"
                   :name="`${field.model}-subtotal-${column.model}`"
-                  :value="!value ? '' : !value['subtotal'] ? '' : !value['subtotal'][column.model] ? '' : value['subtotal'][column.model][field.model]"
+                  :value="
+                    !value
+                      ? ''
+                      : !value['subtotal']
+                      ? ''
+                      : !value['subtotal'][column.model]
+                      ? ''
+                      : value['subtotal'][column.model][field.model]
+                  "
                   :disabled="field.disabled"
                   :required="field.required"
-                  :class="`form-control ${field.class || ''}`"
+                  hide-details
                   readonly
-                />
+                ></v-text-field>
               </div>
-            </div>
-          </td>
-        </tr>
-        <tr v-if="total">
-          <th scope="row">Total</th>
-          <td v-for="column in columns" :key="column.model">
-            <div class="row flex-nowrap input-groups justify-content-between">
-              <div
-                v-for="field in getColumnFields(column)"
-                :key="field.model"
-                class="input-group"
-              >
-                <input
+            </td>
+          </tr>
+          <tr v-if="total">
+            <th scope="row" class="text-body-2">Total</th>
+            <td v-for="column in columns" :key="column.model" class="pa-0">
+              <div class="input-groups">
+                <v-text-field
+                  v-for="field in getColumnFields(column)"
+                  :key="field.model"
+                  outlined
+                  dense
                   :type="field.type || 'number'"
                   :id="`${field.model}-total-${column.model}`"
                   :name="`${field.model}-total-${column.model}`"
-                  :value="!value ? '' : !value['total'] ? '' : !value['total'][column.model] ? '' : value['total'][column.model][field.model]"
+                  :value="
+                    !value
+                      ? ''
+                      : !value['total']
+                      ? ''
+                      : !value['total'][column.model]
+                      ? ''
+                      : value['total'][column.model][field.model]
+                  "
                   :disabled="field.disabled"
                   :required="field.required"
-                  :class="`form-control ${field.class || ''}`"
+                  hide-details
                   readonly
-                />
+                ></v-text-field>
               </div>
-            </div>
-          </td>
-        </tr>
-      </tbody>
-    </table>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -120,21 +149,13 @@ export default {
       const { columnsFields } = this.schema;
       return columnsFields ?? [];
     },
-    wrapperClass() {
-      const { wrapperClass } = this.schema;
-      return wrapperClass || "table-responsive";
-    },
-    tableClass() {
-      const { tableClass } = this.schema;
-      return tableClass || "table table-bordered";
-    },
     subtotal() {
       const { subtotal } = this.schema;
       return subtotal;
     },
     total() {
       const { total } = this.schema;
-      return true;
+      return total;
     },
   },
   methods: {
@@ -150,9 +171,9 @@ export default {
       const { [fieldModel]: fieldValue } = columnValue ?? {};
       return fieldValue;
     },
-    onInput(field, row, column, event) {
-      const { value } = event.target;
+    onInput(field, row, column, value) {
       this.setValue(field, row, column, value);
+      this.calculate(field, column);
     },
     setValue(field, row, column, value) {
       const { model } = row;
@@ -167,12 +188,10 @@ export default {
           ...rowValue,
           [columnModel]: {
             ...columnValue,
-            [fieldModel]: value,
+            [fieldModel]: parseFloat(value),
           },
         },
       };
-
-      this.calculate(field, column);
     },
     calculate(field, column) {
       const { model: columnModel } = column;
@@ -194,11 +213,11 @@ export default {
         const { [model]: rowValue } = this.value ?? {};
         const { [columnModel]: columnValue } = rowValue ?? {};
         const { [fieldModel]: fieldValue } = columnValue ?? {};
-        const value = fieldValue || 0
-        total += parseFloat(value);
+        const value = fieldValue || 0;
+        total += value;
 
         if (this.subtotal && isInSubtotal) {
-          subtotal += parseFloat(value);
+          subtotal += value;
         }
       });
 
@@ -224,23 +243,40 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
 .input-groups {
+  display: flex;
+  flex-direction: row;
+  padding-top: 10px;
   padding-left: 5px;
   padding-right: 5px;
+  padding-bottom: 10px;
+
+  ::v-deep {
+    input[type="number"]::-webkit-inner-spin-button,
+    input[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      appearance: none;
+      margin: 0;
+    }
+  }
 }
 
-.input-groups > .input-group {
+.v-input {
   width: 70px;
   padding-left: 5px;
   padding-right: 5px;
 }
 
-input[type=number]::-webkit-inner-spin-button, 
-input[type=number]::-webkit-outer-spin-button { 
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    margin: 0; 
+table {
+  th,
+  td {
+    border-left: thin solid rgba(0, 0, 0, 0.12);
+  }
+}
+
+.text-body-2 {
+  color: black;
 }
 </style>
